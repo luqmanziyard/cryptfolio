@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cryptfolio/constants.dart';
 import 'package:cryptfolio/provider_data.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
@@ -16,7 +17,7 @@ class CreateOrderScreen extends StatefulWidget {
 
 class _CreateOrderScreenState extends State<CreateOrderScreen> {
   final _firestore = FirebaseFirestore.instance;
-  String tokenSymbol = 'select';
+  String tokenSymbol = 'Token';
   String amount;
   String price;
   double total;
@@ -24,6 +25,8 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
   List<String> tokenSymbols = [];
   String uid;
   double lkrValue;
+  bool buy = false;
+  bool sell = false;
 
   @override
   void initState() {
@@ -56,44 +59,99 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
 
     final double width = MediaQuery.of(context).size.width;
     return Container(
-      height: 1200,
-      color: Colors.pink,
+      height: 540,
       padding: EdgeInsets.symmetric(horizontal: 20),
+      decoration: BoxDecoration(
+          color: kBlueColor,
+          borderRadius: BorderRadius.only(
+            topRight: Radius.circular(20),
+            topLeft: Radius.circular(20),
+          )),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
             height: 20,
           ),
-          Text('Token'),
+          Row(
+            children: [
+              SizedBox(
+                width: 100,
+              ),
+
+              ///title
+              Text(
+                'Create Order',
+                style: TextStyle(
+                  color: kBlackColor,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
+              ),
+              Expanded(
+                child: Container(),
+              ),
+
+              ///close button
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Container(
+                  height: 30,
+                  width: 30,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.grey,
+                  ),
+                  child: Icon(
+                    Icons.clear,
+                    color: kBlackColor,
+                    size: 20,
+                  ),
+                ),
+              )
+            ],
+          ),
 
           ///drop down menu
           Container(
-            margin: EdgeInsets.only(
-              top: 20,
-            ),
+            margin: EdgeInsets.only(top: 20, bottom: 5),
             height: 20,
-            width: 150,
-            color: Colors.black,
+//            width: 120,
+            color: Colors.transparent,
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   tokenSymbol,
-                  style: TextStyle(color: Colors.white),
+                  style: kCreateOrderTextFieldTextStyle,
                 ),
-                DropdownButton<String>(
-                  items: tokenSymbols.map((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                  onChanged: (n) {
-                    setState(() {
-                      tokenSymbol = n;
-                    });
-                  },
+                Theme(
+                  data: ThemeData(
+                    canvasColor: kBlackColor,
+                  ),
+                  child: DropdownButton<String>(
+                    iconDisabledColor: Colors.white,
+                    iconEnabledColor: Colors.white,
+                    items: tokenSymbols.map((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Container(
+                          width: 50,
+                          child: Text(
+                            value,
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                    onChanged: (n) {
+                      setState(() {
+                        tokenSymbol = n;
+                      });
+                    },
+                  ),
                 )
               ],
             ),
@@ -102,9 +160,12 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
           ///amount field
           Container(
             width: 100,
+            decoration: kCreateOrderContainerDecor,
             child: TextField(
               keyboardType: TextInputType.number,
-              decoration: InputDecoration(hintText: 'amount'),
+              style: kCreateOrderTextFieldTextStyle,
+              decoration:
+                  kCreateOrderTextFieldStyle.copyWith(hintText: 'Amount'),
               onChanged: (n) {
                 setState(() {
                   n == '' ? amount = '0.0' : amount = n;
@@ -115,10 +176,16 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
 
           ///price field
           Container(
+            margin: EdgeInsets.only(
+              bottom: 0,
+            ),
+            decoration: kCreateOrderContainerDecor,
             width: 100,
             child: TextField(
               keyboardType: TextInputType.number,
-              decoration: InputDecoration(hintText: 'price'),
+              style: kCreateOrderTextFieldTextStyle,
+              decoration:
+                  kCreateOrderTextFieldStyle.copyWith(hintText: 'price'),
               onChanged: (n) {
                 setState(() {
                   n == '' ? price = '0.0' : price = n;
@@ -130,12 +197,23 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
           ///total field
           Container(
             width: 100,
+            padding: EdgeInsets.only(
+              top: 20,
+              bottom: 10,
+            ),
+            decoration: kCreateOrderContainerDecor,
             child: amount == null || price == null
-                ? Text('0')
-                : Text('${double.parse(amount) * double.parse(price)}'),
+                ? Text(
+                    '0',
+                    style: kCreateOrderTextFieldDisabledTextStyle,
+                  )
+                : Text(
+                    '${double.parse(amount) * double.parse(price)}',
+                    style: kCreateOrderTextFieldTextStyle,
+                  ),
           ),
           SizedBox(
-            height: 20,
+            height: 150,
           ),
 
           ///buy or sell buttons
@@ -146,14 +224,21 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                 onPressed: () {
                   setState(() {
                     status = 'buy';
+                    sell = false;
+                    buy = true;
                   });
                 },
                 child: Container(
                   height: 30,
                   width: width * 0.4,
-                  color: Colors.white,
+                  color: buy ? kGreenColor : kBlueColor,
                   child: Center(
-                    child: Text('Buy'),
+                    child: Text(
+                      'Buy',
+                      style: TextStyle(
+                        color: kLightBlueColor,
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -161,14 +246,21 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                 onPressed: () {
                   setState(() {
                     status = 'sell';
+                    sell = true;
+                    buy = false;
                   });
                 },
                 child: Container(
                   height: 30,
                   width: width * 0.4,
-                  color: Colors.white,
+                  color: sell ? kRedColor : kBlueColor,
                   child: Center(
-                    child: Text('Sell'),
+                    child: Text(
+                      'Sell',
+                      style: TextStyle(
+                        color: kLightBlueColor,
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -183,8 +275,18 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
               child: Container(
                 height: 30,
                 width: width * 0.8,
-                color: Colors.white,
-                child: Center(child: Text('Create Order')),
+                decoration: BoxDecoration(
+                  color: kBlueColor,
+                  border: Border.symmetric(
+                    horizontal: BorderSide(color: kLightBlueColor),
+                  ),
+                ),
+                child: Center(
+                  child: Text(
+                    'Create Order',
+                    style: TextStyle(color: kLightBlueColor),
+                  ),
+                ),
               ),
             ),
           ),
@@ -199,10 +301,14 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
     DateTime dateTime = DateTime.now();
     String formattedDate = DateFormat.yMd().format(dateTime);
 
-    if (amount == null || price == null || status == null) {
+    if (amount == null ||
+        price == null ||
+        status == null ||
+        tokenSymbol == 'Token') {
       print('amount: $amount');
       print('price: $price');
       print('status: $status');
+      print('status: $tokenSymbol');
       print('error');
     } else {
       ///checking if its a sell order and converting the value to negatve

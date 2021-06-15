@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:cryptfolio/constants.dart';
 import 'package:cryptfolio/provider_data.dart';
 import 'package:cryptfolio/screens/login_screen.dart';
 import 'package:cryptfolio/screens/profile_screen.dart';
@@ -31,28 +32,61 @@ class _HomeScreenState extends State<HomeScreen> {
         },
         child: Icon(Icons.logout),
       ),
-      body: Container(
-        child: ListView.builder(
-            padding: EdgeInsets.all(8),
-            itemCount: dataFromApiLatestListing.length,
-            itemBuilder: (BuildContext context, int index) {
-              final name = dataFromApiLatestListing[index]['name'].toString();
-              final price = dataFromApiLatestListing[index]['quote']['USD']
-                      ['price']
-                  .toStringAsPrecision(6);
-              final symbol = dataFromApiLatestListing[index]['symbol'];
-              final percentChange24h = dataFromApiLatestListing[index]['quote']
-                  ['USD']['percent_change_24h'];
+      appBar: AppBar(
+        elevation: 0,
+        foregroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
+        actions: [
+          ProfileButton(),
+        ],
+        title: Text(
+          'Home',
+          style: kTitleTextStyle,
+        ),
+      ),
+      body: ListView.builder(
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          itemCount: dataFromApiLatestListing.length,
+          itemBuilder: (BuildContext context, int index) {
+            final name = dataFromApiLatestListing[index]['name'].toString();
+            final price = dataFromApiLatestListing[index]['quote']['USD']
+                    ['price']
+                .toStringAsPrecision(6);
+            final symbol = dataFromApiLatestListing[index]['symbol'];
+            final percentChange24h = dataFromApiLatestListing[index]['quote']
+                ['USD']['percent_change_24h'];
 
-              final id = dataFromApiLatestListing[index]['id'];
+            final id = dataFromApiLatestListing[index]['id'];
 
-              return TokenCard(
-                tokenPrice: price,
-                tokenName: name,
-                tokenSymbol: symbol,
-                percentChange24h: percentChange24h,
-              );
-            }),
+            return TokenCard(
+              tokenPrice: price,
+              tokenName: name,
+              tokenSymbol: symbol,
+              percentChange24h: percentChange24h,
+            );
+          }),
+    );
+  }
+}
+
+class ProfileButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => Navigator.pushNamed(context, ProfileScreen.id),
+      child: Container(
+        height: 40,
+        width: 40,
+        margin: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+        child: Icon(
+          Icons.person_outline,
+          size: 20,
+          color: Colors.grey,
+        ),
+        decoration: BoxDecoration(
+          color: kBlackColor,
+          borderRadius: BorderRadius.circular(5),
+        ),
       ),
     );
   }
@@ -71,54 +105,58 @@ class TokenCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 84,
-      width: 326,
-      margin: EdgeInsets.only(bottom: 10),
-      padding: EdgeInsets.all(10),
-      color: Colors.white,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          CircleAvatar(
-            radius: 20,
-            backgroundColor: Colors.green,
+      height: 80,
+//      width: 320,
+      margin: EdgeInsets.only(bottom: 20),
+
+      decoration: BoxDecoration(
+        color: kLightBlueColor,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.2),
+            spreadRadius: 4,
+            blurRadius: 5,
+            offset: Offset(
+              0,
+              2,
+            ), // changes position of shadow
           ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Text(tokenName == null ? 'null' : tokenName),
-                  Text(tokenSymbol == null ? 'null' : tokenSymbol),
-                ],
-              ),
-              Text('\$${tokenPrice}')
-            ],
-          ),
-          Text(percentChange24h == null
-              ? 'null'
-              : '${percentChange24h.toStringAsFixed(3)}%')
         ],
       ),
-    );
-  }
-}
-
-class Token {
-  final String name, symbol, percentChange24h;
-
-  Token({
-    this.name,
-    this.symbol,
-    this.percentChange24h,
-  });
-
-  factory Token.fromJson(Map<String, dynamic> json) {
-    return Token(
-      name: json['name'].toString(),
-      symbol: json['symbol'].toString(),
-      percentChange24h:
-          json['quote']['USD']['forecast']['percent_change_24h'].toString(),
+      child: ListTile(
+        leading: CircleAvatar(
+          radius: 20,
+          backgroundColor: Colors.green,
+        ),
+        title: Row(
+          children: [
+            Text(
+              tokenName == null ? 'null' : tokenName,
+              style: kTokenCardTokenNameStyle,
+            ),
+            SizedBox(
+              width: 5,
+            ),
+            Text(
+              tokenSymbol == null ? 'null' : tokenSymbol,
+              style: kTokenCardTokenSymbolStyle,
+            )
+          ],
+        ),
+        subtitle: Text(
+          '\$$tokenPrice',
+          style: kTokenCardTokenPriceStyle,
+        ),
+        trailing: Text(
+          percentChange24h == null
+              ? 'null'
+              : '${percentChange24h.toStringAsFixed(2)}%',
+          style: TextStyle(
+            color: percentChange24h >= 0 ? kGreenColor : kRedColor,
+          ),
+        ),
+      ),
     );
   }
 }

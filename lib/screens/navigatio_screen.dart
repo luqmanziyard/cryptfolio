@@ -25,23 +25,6 @@ class _NavigationScreenState extends State<NavigationScreen> {
   String password;
 
   int _selectedIndex = 0;
-  static const TextStyle optionStyle =
-      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-
-  static const List<Widget> _widgetOptions = <Widget>[
-    Text(
-      'Index 0: Home',
-      style: optionStyle,
-    ),
-    Text(
-      'Index 1: Business',
-      style: optionStyle,
-    ),
-    Text(
-      'Index 2: School',
-      style: optionStyle,
-    ),
-  ];
 
   void _onItemTapped(int index) {
     setState(() {
@@ -78,15 +61,15 @@ class _NavigationScreenState extends State<NavigationScreen> {
     });
 
     ///getting the list of maps from Meta Data url
-    var urlMetaData =
-        'https://pro-api.coinmarketcap.com/v1/cryptocurrency/info';
-    http.Response responseMetaData = await http.get(
-      urlMetaData,
-      headers: {'X-CMC_PRO_API_KEY': '749b9bac-2b33-44bf-88f9-113786464888'},
-    );
-
-    Map<String, dynamic> data = jsonDecode(responseMetaData.body);
-    print(data['data']);
+//    var urlMetaData =
+//        'https://pro-api.coinmarketcap.com/v1/cryptocurrency/info';
+//    http.Response responseMetaData = await http.get(
+//      urlMetaData,
+//      headers: {'X-CMC_PRO_API_KEY': '749b9bac-2b33-44bf-88f9-113786464888'},
+//    );
+//
+//    Map<String, dynamic> data = jsonDecode(responseMetaData.body);
+//    print(data['data']);
   }
 
   @override
@@ -103,6 +86,8 @@ class _NavigationScreenState extends State<NavigationScreen> {
             backgroundColor: Colors.white,
             body: screens[_selectedIndex],
             bottomNavigationBar: BottomNavigationBar(
+              showSelectedLabels: false,
+              showUnselectedLabels: false,
               items: const <BottomNavigationBarItem>[
                 BottomNavigationBarItem(
                   icon: Icon(Icons.home),
@@ -118,7 +103,8 @@ class _NavigationScreenState extends State<NavigationScreen> {
                 ),
               ],
               currentIndex: _selectedIndex,
-              selectedItemColor: Colors.amber[800],
+              selectedItemColor: kBlueColor,
+              unselectedItemColor: kGreyColor,
               onTap: _onItemTapped,
             ),
           );
