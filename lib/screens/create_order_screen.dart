@@ -208,7 +208,8 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                     style: kCreateOrderTextFieldDisabledTextStyle,
                   )
                 : Text(
-                    '${double.parse(amount) * double.parse(price)}',
+                    (double.parse(amount) * double.parse(price))
+                        .toStringAsFixed(2),
                     style: kCreateOrderTextFieldTextStyle,
                   ),
           ),
@@ -379,6 +380,9 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
           sumOfPrices += eachPrice;
         }
       });
+
+//      sumOfTokens >= 0 ? sumOfTokens = sumOfTokens: sumOfTokens = 0.0;
+      sumOfPrices >= 0 ? sumOfPrices = sumOfPrices : sumOfPrices = 0.0001;
 
       ///adding the total number of tokens and the total invested
       await _firestore

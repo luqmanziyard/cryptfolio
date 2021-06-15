@@ -82,3 +82,22 @@ const TextStyle kCreateOrderTextFieldDisabledTextStyle = TextStyle(
   color: Colors.grey,
   fontSize: 18,
 );
+
+const TextStyle kPortfolioCardTokenSymbolStyle = TextStyle(color: Colors.white);
+
+const TextStyle kPortfolioCardTokenPriceStyle = TextStyle(
+  color: Colors.white,
+  fontWeight: FontWeight.bold,
+);
+
+const TextStyle kPortfolioCardAmountStyle = TextStyle(
+  color: Colors.white,
+);
+
+List<Color> colorList = [
+  Colors.red,
+  Colors.green,
+  Colors.yellow,
+  Colors.pink,
+  Colors.purple,
+];
