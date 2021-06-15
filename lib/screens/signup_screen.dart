@@ -55,6 +55,7 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 
   onTapSignUp() async {
+    DateTime dateTime = DateTime.now();
     try {
       final user = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
@@ -66,6 +67,7 @@ class _SignupScreenState extends State<SignupScreen> {
         'email': email,
         'netWorthInUsd': 0,
         'netWorthInLrk': 0,
+        'dateTime': dateTime,
       });
       if (user != null) {
         Navigator.pushNamed(context, NavigationScreen.id);
