@@ -1,5 +1,4 @@
 import 'package:cryptfolio/provider_data.dart';
-import 'package:cryptfolio/screens/home_screen.dart';
 import 'package:cryptfolio/screens/loading_screen.dart';
 import 'package:cryptfolio/screens/navigatio_screen.dart';
 import 'package:cryptfolio/screens/login_screen.dart';

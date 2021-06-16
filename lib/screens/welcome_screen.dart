@@ -8,6 +8,8 @@ class WelcomeScreen extends StatelessWidget {
   static const id = 'welcome screen';
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
@@ -19,14 +21,36 @@ class WelcomeScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: EdgeInsets.symmetric(vertical: 10),
-                child: Text('cryptfolio'),
+                padding: EdgeInsets.symmetric(
+                  vertical: 20,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Cryptfolio',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 44,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      'Organize your satoshis',
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              ActionButton(
+              ActiveButton(
+                height: height,
+                width: width,
                 name: 'log in',
                 onTap: () => Navigator.pushNamed(context, LoginScreen.id),
               ),
-              ActionButton(
+              InActiveButton(
                 name: 'sign up',
                 onTap: () => Navigator.pushNamed(context, SignupScreen.id),
               ),

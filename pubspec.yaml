@@ -20,6 +20,7 @@ dependencies:
   provider: ^5.0.0
   intl: ^0.16.1
   pie_chart: ^5.0.0
+  modal_progress_hud_nsn: ^0.1.0-nullsafety-1
 
 
 dev_dependencies:

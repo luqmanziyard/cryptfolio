@@ -1,5 +1,3 @@
-import 'package:cryptfolio/screens/home_screen.dart';
-import 'package:cryptfolio/screens/login_screen.dart';
 import 'package:cryptfolio/screens/navigatio_screen.dart';
 import 'package:cryptfolio/screens/welcome_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';

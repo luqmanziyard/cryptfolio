@@ -43,7 +43,7 @@ const TextStyle kTransactionCardDateStyle = TextStyle(
   color: Colors.white,
 );
 
-const InputDecoration kCreateOrderTextFieldStyle = InputDecoration(
+const InputDecoration kCreateOrderTextFieldDecor = InputDecoration(
   contentPadding: EdgeInsets.all(0),
   hintText: 'price',
   hintStyle: kCreateOrderTextFieldDisabledTextStyle,
@@ -101,3 +101,40 @@ List<Color> colorList = [
   Colors.pink,
   Colors.purple,
 ];
+
+const TextStyle kProfileTitleStyle = TextStyle(
+  color: Colors.white,
+  fontSize: 18,
+);
+
+const TextStyle kProfileFieldTitleStyle = TextStyle(
+  color: kGreyColor,
+  fontSize: 18,
+);
+
+const BoxDecoration kLogOutButtonDecor = BoxDecoration(
+  color: kBlueColor,
+  border: Border.symmetric(
+    horizontal: BorderSide(color: kLightBlueColor),
+  ),
+);
+
+const TextStyle kLogoutStyle = TextStyle(color: kLightBlueColor);
+
+const InputDecoration kAuthTextFieldDecor = InputDecoration(
+  contentPadding: EdgeInsets.symmetric(horizontal: 20),
+  hintText: 'email',
+  hintStyle: TextStyle(
+    color: Colors.white,
+    fontWeight: FontWeight.w200,
+  ),
+  enabledBorder: OutlineInputBorder(
+    borderSide: BorderSide(color: Colors.red),
+  ),
+  disabledBorder: OutlineInputBorder(
+    borderSide: BorderSide(color: Colors.red),
+  ),
+  focusedBorder: OutlineInputBorder(
+    borderSide: BorderSide(color: Colors.red),
+  ),
+);

@@ -1,14 +1,9 @@
 import 'dart:convert';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cryptfolio/constants.dart';
 import 'package:cryptfolio/provider_data.dart';
 import 'package:cryptfolio/screens/home_screen.dart';
 import 'package:cryptfolio/screens/portfolio_screen.dart';
-import 'package:cryptfolio/screens/profile_screen.dart';
 import 'package:cryptfolio/screens/transaction_screen.dart';
-import 'package:cryptfolio/widgets.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';

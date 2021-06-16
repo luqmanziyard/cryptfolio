@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cryptfolio/constants.dart';
-import 'package:cryptfolio/screens/login_screen.dart';
 import 'package:cryptfolio/screens/welcome_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -45,6 +44,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: kBlueColor,
@@ -66,60 +66,43 @@ class _ProfileScreenState extends State<ProfileScreen> {
               radius: 80,
               child: Icon(Icons.person_outline),
             ),
+
+            ///email
             ListTile(
               title: Text(
                 'Email',
-                style: TextStyle(
-                  color: Colors.white.withOpacity(0.5),
-                  fontSize: 18,
-                ),
+                style: kProfileFieldTitleStyle,
               ),
               subtitle: Text(
                 email,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                ),
+                style: kProfileTitleStyle,
               ),
             ),
+
+            ///date joined
             ListTile(
               title: Text(
                 'Date joined',
-                style: TextStyle(
-                  color: Colors.white.withOpacity(0.5),
-                  fontSize: 18,
-                ),
+                style: kProfileFieldTitleStyle,
               ),
               subtitle: Text(
                 dateJoined == null ? 'loading' : dateJoined,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                ),
+                style: kProfileTitleStyle,
               ),
             ),
             Expanded(child: Container()),
+
+            ///log out button
             TextButton(
-              onPressed: () {
-                FirebaseAuth.instance.signOut();
-                Navigator.pop(context);
-                Navigator.pop(context);
-                Navigator.pushNamed(context, WelcomeScreen.id);
-                Navigator.pushNamed(context, LoginScreen.id);
-              },
+              onPressed: louOutUser,
               child: Container(
                 margin: EdgeInsets.only(bottom: 20),
-                height: 40,
-                decoration: BoxDecoration(
-                  color: kBlueColor,
-                  border: Border.symmetric(
-                    horizontal: BorderSide(color: kLightBlueColor),
-                  ),
-                ),
+                height: height * 0.059,
+                decoration: kLogOutButtonDecor,
                 child: Center(
                   child: Text(
                     'Log Out',
-                    style: TextStyle(color: kLightBlueColor),
+                    style: kLogoutStyle,
                   ),
                 ),
               ),
@@ -128,5 +111,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
       ),
     );
+  }
+
+  louOutUser() {
+    FirebaseAuth.instance.signOut();
+    Navigator.pop(context);
+    Navigator.pop(context);
+    Navigator.pushNamed(context, WelcomeScreen.id);
   }
 }

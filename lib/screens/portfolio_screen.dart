@@ -35,10 +35,12 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
         .doc(uid)
         .get()
         .then((value) {
-      setState(() {
-        netWorthInUsd = value['netWorthInUsd'];
-        netWorthInLkr = value['netWorthInLrk'];
-      });
+      if (mounted) {
+        setState(() {
+          netWorthInUsd = value['netWorthInUsd'];
+          netWorthInLkr = value['netWorthInLrk'];
+        });
+      }
     });
 
     await FirebaseFirestore.instance
@@ -51,20 +53,24 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
       for (var eachToken in tokens.docs) {
         final String tokenName = eachToken.id;
         final double amountOfMoney = eachToken['amountOfMoney'];
-        setState(() {
-          Random random = Random();
-          final color =
-              Color((random.nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0);
+        if (mounted) {
+          setState(() {
+            Random random = Random();
+            final color = Color((random.nextDouble() * 0xFFFFFF).toInt())
+                .withOpacity(1.0);
 
-          randomColors.add(color);
-          randomMap[tokenName] = amountOfMoney;
-        });
+            randomColors.add(color);
+            randomMap[tokenName] = amountOfMoney;
+          });
+        }
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
     final uid = FirebaseAuth.instance.currentUser.uid;
     return Scaffold(
       appBar: AppBar(
@@ -78,7 +84,12 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
       backgroundColor: Colors.white,
       body: Container(
         child: randomColors.isEmpty || randomMap.isEmpty
-            ? Center(child: CircularProgressIndicator())
+            ? Center(
+                child: Text(
+                  'Please add a transaction to \nshow your net worth',
+                  textAlign: TextAlign.center,
+                ),
+              )
             : Column(
                 children: [
                   Container(
@@ -169,6 +180,8 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
                               currentValue: currentValue,
                               index: index,
                               colorList: randomColors,
+                              width: width,
+                              height: height,
                             );
                           },
                         );
@@ -183,14 +196,17 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
 }
 
 class PortfolioCard extends StatelessWidget {
-  const PortfolioCard(
-      {Key key,
-      @required this.amountOfTokens,
-      @required this.currentProfit,
-      @required this.tokenName,
-      @required this.currentValue,
-      this.colorList,
-      this.index});
+  const PortfolioCard({
+    Key key,
+    @required this.amountOfTokens,
+    @required this.currentProfit,
+    @required this.tokenName,
+    @required this.currentValue,
+    this.colorList,
+    this.index,
+    this.height,
+    this.width,
+  });
 
   final String amountOfTokens;
   final double currentProfit;
@@ -198,11 +214,14 @@ class PortfolioCard extends StatelessWidget {
   final double currentValue;
   final List<Color> colorList;
   final int index;
+  final double height;
+  final double width;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 80,
+      width: width * 0.869,
+      height: height * 0.119,
       margin: EdgeInsets.only(
         bottom: 15,
       ),
@@ -222,8 +241,6 @@ class PortfolioCard extends StatelessWidget {
         ],
       ),
       child: ListTile(
-        focusColor: Colors.red,
-
         ///logo
         leading: CircleAvatar(
           backgroundColor: Colors.blue,
